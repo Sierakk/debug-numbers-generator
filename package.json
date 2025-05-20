@@ -17,6 +17,26 @@
       "mode": "view"
     }
   ],
+  "preferences": [
+    {
+      "name": "mainCountry",
+      "type": "dropdown",
+      "required": true,
+      "title": "Choose your main country",
+      "description": "Your country will be displayed first after opening",
+      "placeholder": "Poland \uD83C\uDDF5\uD83C\uDDF1",
+      "data": [
+        {
+          "value": "poland",
+          "title": "Poland"
+        },
+        {
+          "value": "usa",
+          "title": "USA"
+        }
+      ]
+    }
+  ],
   "dependencies": {
     "@raycast/api": "^1.98.5",
     "@raycast/utils": "^1.17.0"
