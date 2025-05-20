@@ -1,67 +1,60 @@
-import { ActionPanel, Action, Icon, List, ListItem } from "@raycast/api";
-import { generateRandomPESEL, generateRandomNIP, generateRandomREGON } from "./utils/idGenerators";
+import { ActionPanel, Action, Icon, List } from "@raycast/api";
+import { useState } from "react";
+import { generateRandomPESEL, generateRandomNIP, generateRandomREGON, generateRandomSSN, generateRandomPolishIBAN } from "./utils/idGenerators";
 
 
-const peselList = {
-  icon: Icon.AddPerson,
-  title: "PESEL",
-  subtitle: generateRandomPESEL(),
-  accessory: "Numer Identyfikacji -  Osobsty",
+const idTypesByCountry: Record<string, Array<{ key: string; title: string; generator: () => string; accessory: string }>> = {
+  poland: [
+    { key: "pesel", title: "PESEL", generator: generateRandomPESEL, accessory: "Numer Identyfikacji Osobistej" },
+    { key: "nip", title: "NIP", generator: generateRandomNIP, accessory: "Numer Identyfikacji Podatkowej" },
+    { key: "regon", title: "REGON", generator: generateRandomREGON, accessory: "Numer w Rejestrze Gospodarki Narodowej" },
+  ],
+  usa: [
+    { key: "ssn", title: "SSN", generator: generateRandomSSN, accessory: "Social Security Number" },
+  ],
 };
 
-const nipList = {
-  icon: Icon.AddPerson,
-  title: "NIP",
-  subtitle: generateRandomNIP(),
-  accessory: "Numer Identyfikacji Podatkowej",
-}
-
-const regonList = {
-  icon: Icon.AddPerson,
-  title: "REGON",
-  subtitle: generateRandomREGON(),
-  accessory: "Numer w Rejestrze Gospodarki Narodowej"
-}
+const countryOptions = [
+  { key: "poland", title: "Poland" },
+  { key: "usa", title: "USA" },
+];
 
 export default function Command() {
+  const [selectedCountry, setSelectedCountry] = useState("poland");
+  const idTypes = idTypesByCountry[selectedCountry];
+
   return (
-    <List>
-        <List.Item
-          icon={peselList.icon}
-          title={peselList.title}
-          subtitle={peselList.subtitle}
-          accessories={[{ icon: Icon.Clipboard, text: peselList.accessory }]}
-          actions={
-            <ActionPanel>
-              <Action.CopyToClipboard content={peselList.subtitle} />
-              <Action.Paste content={peselList.subtitle} />
-            </ActionPanel>
-          }
-        />
-      <List.Item
-        icon={nipList.icon}
-        title={nipList.title}
-        subtitle={nipList.subtitle}
-        accessories={[{ icon: Icon.Clipboard, text: nipList.accessory }]}
-        actions={
-          <ActionPanel>
-            <Action.CopyToClipboard content={nipList.subtitle} />
-            <Action.Paste content={nipList.subtitle} />
-          </ActionPanel>
-          }
-        />
-        <List.Item
-          icon={regonList.icon}
-          title={regonList.title}
-          subtitle={regonList.subtitle}
-          accessories={[{ icon: Icon.Clipboard, text: regonList.accessory }]}
-          actions={
-            <ActionPanel>
-              <Action.CopyToClipboard content={regonList.subtitle}/>
-              <Action.Paste content={regonList.subtitle} />
-            </ActionPanel>
-          }
+    <List
+      searchBarAccessory={
+        <List.Dropdown
+          tooltip="Select Country"
+          value={selectedCountry}
+          onChange={setSelectedCountry}
+        >
+          {countryOptions.map((country) => (
+            <List.Dropdown.Item key={country.key} title={country.title} value={country.key} />
+          ))}
+        </List.Dropdown>
+      }
+    >
+      {idTypes.map((id) => {
+        const generated = id.generator();
+        return (
+          <List.Item
+            key={id.key}
+            icon={Icon.AddPerson}
+            title={id.title}
+            subtitle={generated}
+            accessories={[{ icon: Icon.Clipboard, text: id.accessory }]}
+            actions={
+              <ActionPanel>
+                <Action.CopyToClipboard content={generated} />
+                <Action.Paste content={generated} />
+              </ActionPanel>
+            }
           />
+        );
+      })}
     </List>
   );
 }

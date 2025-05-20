@@ -1,3 +1,7 @@
+//File with generators
+
+//Polish section
+
 function generateRandomPESEL(): string {
   // Generate a random birth date (1900-01-01 to today)
   const start = new Date(1900, 0, 1).getTime();
@@ -69,4 +73,34 @@ function generateRandomREGON(): string {
   return digits.join("") + checksum;
 }
 
-export { generateRandomPESEL, generateRandomNIP, generateRandomREGON };
+function generateRandomPolishIBAN(): string {
+  // Generate 26 random digits for the account number
+  let account = "";
+  for (let i = 0; i < 26; i++) {
+    account += Math.floor(Math.random() * 10).toString();
+  }
+  // Calculate checksum (simplified, not fully compliant)
+  const iban = `PL00${account}`;
+  return iban;
+}
+
+//US Section
+function generateRandomSSN(): string {
+  let area: number;
+  do {
+    area = Math.floor(Math.random() * 899) + 1; // 001–899
+  } while (area === 666);
+
+  const group = Math.floor(Math.random() * 99) + 1; // 01–99
+  const serial = Math.floor(Math.random() * 9999) + 1; // 0001–9999
+
+  const areaStr = area.toString().padStart(3, "0");
+  const groupStr = group.toString().padStart(2, "0");
+  const serialStr = serial.toString().padStart(4, "0");
+
+  return `${areaStr}-${groupStr}-${serialStr}`;
+}
+
+
+
+export { generateRandomPESEL, generateRandomNIP, generateRandomREGON, generateRandomSSN, generateRandomPolishIBAN };
