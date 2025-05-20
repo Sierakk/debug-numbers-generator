@@ -8,6 +8,7 @@ const idTypesByCountry: Record<string, Array<{ key: string; title: string; gener
     { key: "pesel", title: "PESEL", generator: generateRandomPESEL, accessory: "Numer Identyfikacji Osobistej" },
     { key: "nip", title: "NIP", generator: generateRandomNIP, accessory: "Numer Identyfikacji Podatkowej" },
     { key: "regon", title: "REGON", generator: generateRandomREGON, accessory: "Numer w Rejestrze Gospodarki Narodowej" },
+    { key: "iban", title: "IBAN", generator: generateRandomPolishIBAN, accessory: "Numer konta bankowego" },
   ],
   usa: [
     { key: "ssn", title: "SSN", generator: generateRandomSSN, accessory: "Social Security Number" },
