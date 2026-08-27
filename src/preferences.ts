@@ -36,5 +36,6 @@ export function getGeneratorContext(country?: CountryId): GeneratorContext {
     emailPrefix: preferences.emailPrefix ?? "",
     emailTagMode: parseTagMode(preferences.emailTagMode),
     emailTagLength: parseTagLength(preferences.emailTagLength),
+    values: {},
   };
 }

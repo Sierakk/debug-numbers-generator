@@ -18,6 +18,7 @@ export interface GeneratorContext {
   emailPrefix: string;
   emailTagMode: EmailTagMode;
   emailTagLength: number;
+  values: Record<string, string>;
 }
 
 export interface CopyVariant {

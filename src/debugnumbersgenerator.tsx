@@ -23,11 +23,16 @@ export default function Command() {
 
   const items = useMemo(() => {
     const ctx = getGeneratorContext(selectedCountry);
+    const fields = fieldsForCountry(selectedCountry);
+    const result: Array<{ field: FieldDefinition; value: string }> = [];
 
-    return fieldsForCountry(selectedCountry).map((field) => ({
-      field,
-      value: field.generator(ctx),
-    }));
+    for (const field of fields) {
+      const value = field.generator(ctx);
+      ctx.values[field.id] = value;
+      result.push({ field, value });
+    }
+
+    return result;
   }, [selectedCountry, seed]);
 
   const groupedItems = categoryOrder

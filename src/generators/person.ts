@@ -1,5 +1,6 @@
 import { faker as fakerPL } from "@faker-js/faker/locale/pl";
 import { faker as fakerUS } from "@faker-js/faker/locale/en_US";
+import { GeneratorContext } from "../catalog/types";
 import { randomDigits, randomItem } from "./checksum";
 
 const POLISH_CITIES = [
@@ -34,16 +35,62 @@ function formatDate(date: Date, locale: string): string {
   }).format(date);
 }
 
-export function generatePolishFirstName(): string {
-  return fakerPL.person.firstName();
+export function generateCompositeFullName(
+  ctx: GeneratorContext | undefined,
+  firstNameKey: string,
+  lastNameKey: string,
+  fallbackFirst: () => string,
+  fallbackLast: () => string,
+): string {
+  let firstName = ctx?.values?.[firstNameKey];
+  if (!firstName) {
+    firstName = fallbackFirst();
+    if (ctx?.values) {
+      ctx.values[firstNameKey] = firstName;
+    }
+  }
+
+  let lastName = ctx?.values?.[lastNameKey];
+  if (!lastName) {
+    lastName = fallbackLast();
+    if (ctx?.values) {
+      ctx.values[lastNameKey] = lastName;
+    }
+  }
+
+  return `${firstName} ${lastName}`;
 }
 
-export function generatePolishLastName(): string {
-  return fakerPL.person.lastName();
+export function generatePolishFirstName(ctx?: GeneratorContext): string {
+  if (ctx?.values?.["first-name-pl"]) {
+    return ctx.values["first-name-pl"];
+  }
+  const name = fakerPL.person.firstName();
+  if (ctx?.values) {
+    ctx.values["first-name-pl"] = name;
+  }
+  return name;
 }
 
-export function generatePolishFullName(): string {
-  return `${generatePolishFirstName()} ${generatePolishLastName()}`;
+export function generatePolishLastName(ctx?: GeneratorContext): string {
+  if (ctx?.values?.["last-name-pl"]) {
+    return ctx.values["last-name-pl"];
+  }
+  const name = fakerPL.person.lastName();
+  if (ctx?.values) {
+    ctx.values["last-name-pl"] = name;
+  }
+  return name;
+}
+
+export function generatePolishFullName(ctx?: GeneratorContext): string {
+  return generateCompositeFullName(
+    ctx,
+    "first-name-pl",
+    "last-name-pl",
+    () => fakerPL.person.firstName(),
+    () => fakerPL.person.lastName(),
+  );
 }
 
 export function generatePolishBirthDate(): string {
@@ -66,16 +113,36 @@ export function generatePolishCompanyName(): string {
   return fakerPL.company.name();
 }
 
-export function generateUSFirstName(): string {
-  return fakerUS.person.firstName();
+export function generateUSFirstName(ctx?: GeneratorContext): string {
+  if (ctx?.values?.["first-name-us"]) {
+    return ctx.values["first-name-us"];
+  }
+  const name = fakerUS.person.firstName();
+  if (ctx?.values) {
+    ctx.values["first-name-us"] = name;
+  }
+  return name;
 }
 
-export function generateUSLastName(): string {
-  return fakerUS.person.lastName();
+export function generateUSLastName(ctx?: GeneratorContext): string {
+  if (ctx?.values?.["last-name-us"]) {
+    return ctx.values["last-name-us"];
+  }
+  const name = fakerUS.person.lastName();
+  if (ctx?.values) {
+    ctx.values["last-name-us"] = name;
+  }
+  return name;
 }
 
-export function generateUSFullName(): string {
-  return `${generateUSFirstName()} ${generateUSLastName()}`;
+export function generateUSFullName(ctx?: GeneratorContext): string {
+  return generateCompositeFullName(
+    ctx,
+    "first-name-us",
+    "last-name-us",
+    () => fakerUS.person.firstName(),
+    () => fakerUS.person.lastName(),
+  );
 }
 
 export function generateUSBirthDate(): string {
