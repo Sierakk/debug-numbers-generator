@@ -49,8 +49,8 @@ export default function Command() {
           <Action title="Open Extension Preferences" icon={Icon.Gear} onAction={openExtensionPreferences} />
         ) : (
           <>
-            <Action.CopyToClipboard title="Copy Value" content={value} />
             <Action.Paste title="Paste Value" content={value} />
+            <Action.CopyToClipboard title="Copy Value" content={value} />
             {field.copyVariants
               ?.map((variant) => {
                 const transformed = variant.transform(value);
