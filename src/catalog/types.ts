@@ -1,4 +1,4 @@
-export type CountryId = "poland" | "usa";
+export type CountryId = "poland" | "usa" | "germany" | "uk" | "france";
 
 export type EmailTagMode = "random" | "timestamp" | "country-random";
 

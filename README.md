@@ -11,7 +11,7 @@ Generate unique, validation-friendly test data for form and tracking QA.
 
 Tracking, Identity, Contact, Address, Company, Payment, Vehicle.
 
-Poland and USA include names, dates of birth, addresses, company data, phones, national IDs, plus global debug email, UUID, and test cards (Stripe, Visa, MasterCard).
+Poland, Germany, United Kingdom, France, and USA include names, dates of birth, addresses, company data, phones, national IDs, plus global debug email, UUID, and test cards (Stripe, Visa, MasterCard).
 
 ## Preferences
 
@@ -25,4 +25,4 @@ Plus-addressing works with Gmail / Google Workspace and many Outlook setups. The
 
 ## Notes
 
-Generated IDs are synthetic and meant only for testing. Polish IBAN values use a real ISO 13616 checksum so frontend validators accept them.
+Generated IDs are synthetic and meant only for testing. IBAN values use a real ISO 13616 checksum so frontend validators accept them.

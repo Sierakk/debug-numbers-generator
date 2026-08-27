@@ -1,5 +1,8 @@
 import { faker as fakerPL } from "@faker-js/faker/locale/pl";
 import { faker as fakerUS } from "@faker-js/faker/locale/en_US";
+import { faker as fakerDE } from "@faker-js/faker/locale/de";
+import { faker as fakerGB } from "@faker-js/faker/locale/en_GB";
+import { faker as fakerFR } from "@faker-js/faker/locale/fr";
 import { GeneratorContext } from "../catalog/types";
 import { randomDigits, randomItem } from "./checksum";
 
@@ -167,4 +170,148 @@ export function generateUSZip(): string {
 
 export function generateUSCompanyName(): string {
   return fakerUS.company.name();
+}
+
+export function generateGermanFirstName(ctx?: GeneratorContext): string {
+  if (ctx?.values?.["first-name-de"]) {
+    return ctx.values["first-name-de"];
+  }
+  const name = fakerDE.person.firstName();
+  if (ctx?.values) {
+    ctx.values["first-name-de"] = name;
+  }
+  return name;
+}
+
+export function generateGermanLastName(ctx?: GeneratorContext): string {
+  if (ctx?.values?.["last-name-de"]) {
+    return ctx.values["last-name-de"];
+  }
+  const name = fakerDE.person.lastName();
+  if (ctx?.values) {
+    ctx.values["last-name-de"] = name;
+  }
+  return name;
+}
+
+export function generateGermanFullName(ctx?: GeneratorContext): string {
+  return generateCompositeFullName(
+    ctx,
+    "first-name-de",
+    "last-name-de",
+    () => fakerDE.person.firstName(),
+    () => fakerDE.person.lastName(),
+  );
+}
+
+export function generateGermanBirthDate(): string {
+  return formatDate(randomBirthDate(), "de-DE");
+}
+
+export function generateGermanStreet(): string {
+  return fakerDE.location.streetAddress();
+}
+
+export function generateGermanCity(): string {
+  return fakerDE.location.city();
+}
+
+export function generateGermanCompanyName(): string {
+  return fakerDE.company.name();
+}
+
+export function generateUKFirstName(ctx?: GeneratorContext): string {
+  if (ctx?.values?.["first-name-uk"]) {
+    return ctx.values["first-name-uk"];
+  }
+  const name = fakerGB.person.firstName();
+  if (ctx?.values) {
+    ctx.values["first-name-uk"] = name;
+  }
+  return name;
+}
+
+export function generateUKLastName(ctx?: GeneratorContext): string {
+  if (ctx?.values?.["last-name-uk"]) {
+    return ctx.values["last-name-uk"];
+  }
+  const name = fakerGB.person.lastName();
+  if (ctx?.values) {
+    ctx.values["last-name-uk"] = name;
+  }
+  return name;
+}
+
+export function generateUKFullName(ctx?: GeneratorContext): string {
+  return generateCompositeFullName(
+    ctx,
+    "first-name-uk",
+    "last-name-uk",
+    () => fakerGB.person.firstName(),
+    () => fakerGB.person.lastName(),
+  );
+}
+
+export function generateUKBirthDate(): string {
+  return formatDate(randomBirthDate(), "en-GB");
+}
+
+export function generateUKStreet(): string {
+  return fakerGB.location.streetAddress();
+}
+
+export function generateUKCity(): string {
+  return fakerGB.location.city();
+}
+
+export function generateUKCompanyName(): string {
+  return fakerGB.company.name();
+}
+
+export function generateFrenchFirstName(ctx?: GeneratorContext): string {
+  if (ctx?.values?.["first-name-fr"]) {
+    return ctx.values["first-name-fr"];
+  }
+  const name = fakerFR.person.firstName();
+  if (ctx?.values) {
+    ctx.values["first-name-fr"] = name;
+  }
+  return name;
+}
+
+export function generateFrenchLastName(ctx?: GeneratorContext): string {
+  if (ctx?.values?.["last-name-fr"]) {
+    return ctx.values["last-name-fr"];
+  }
+  const name = fakerFR.person.lastName();
+  if (ctx?.values) {
+    ctx.values["last-name-fr"] = name;
+  }
+  return name;
+}
+
+export function generateFrenchFullName(ctx?: GeneratorContext): string {
+  return generateCompositeFullName(
+    ctx,
+    "first-name-fr",
+    "last-name-fr",
+    () => fakerFR.person.firstName(),
+    () => fakerFR.person.lastName(),
+  );
+}
+
+export function generateFrenchBirthDate(): string {
+  return formatDate(randomBirthDate(), "fr-FR");
+}
+
+export function generateFrenchStreet(): string {
+  return fakerFR.location.streetAddress();
+}
+
+export function generateFrenchCity(): string {
+  return fakerFR.location.city();
+}
+
+export function generateFrenchCompanyName(): string {
+  return fakerFR.company.name();
 }

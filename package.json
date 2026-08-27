@@ -37,6 +37,18 @@
           "title": "Poland"
         },
         {
+          "value": "germany",
+          "title": "Germany"
+        },
+        {
+          "value": "uk",
+          "title": "United Kingdom"
+        },
+        {
+          "value": "france",
+          "title": "France"
+        },
+        {
           "value": "usa",
           "title": "USA"
         }
