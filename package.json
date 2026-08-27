@@ -3,7 +3,7 @@
   "name": "debug-id-generator",
   "title": "Debug ID Generator",
   "description": "Generate unique, validation-friendly test data for forms and tracking QA: national IDs, phones, IBANs, and plus-addressed debug emails.",
-  "icon": "duck1.png",
+  "icon": "extension_icon.png",
   "author": "sierakk",
   "categories": [
     "Developer Tools"
