@@ -11,7 +11,7 @@ Generate unique, validation-friendly test data for form and tracking QA.
 
 Tracking, Identity, Contact, Address, Company, Payment, Vehicle.
 
-Poland and USA include names, dates of birth, addresses, company data, phones, national IDs, plus global debug email, UUID, and Stripe test card (`4242…`).
+Poland and USA include names, dates of birth, addresses, company data, phones, national IDs, plus global debug email, UUID, and test cards (Stripe, Visa, MasterCard).
 
 ## Preferences
 

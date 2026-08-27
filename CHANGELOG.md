@@ -7,5 +7,5 @@
 - Plus-addressed debug emails from a configured tester inbox
 - Paste Debug Email command for focused form fields
 - Valid Polish IBAN checksums and more realistic plate numbers
-- Stripe test card, UUID, names, addresses, VAT
+- Stripe, Visa, and MasterCard test cards, UUID, names, addresses, VAT
 - Stable list values with manual regenerate (`⌘R`)

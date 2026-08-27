@@ -1,6 +1,13 @@
 import { CountryId, FieldCategory, FieldDefinition } from "./types";
 import { extractPlusTag, generateDebugEmail } from "../generators/email";
-import { formatCardNumber, generateCardCvc, generateCardExpiry, generateTestCard } from "../generators/payment";
+import {
+  formatCardNumber,
+  generateCardCvc,
+  generateCardExpiry,
+  generateMasterCard,
+  generateStripeTestCard,
+  generateVisaCard,
+} from "../generators/payment";
 import {
   generatePolishBirthDate,
   generatePolishCity,
@@ -299,12 +306,30 @@ export const fieldCatalog: FieldDefinition[] = [
     copyVariants: [{ title: "Copy without spaces", transform: (value) => value.replaceAll(" ", "") }],
   },
   {
-    id: "card-number",
-    title: "Test card",
+    id: "stripe-card",
+    title: "Stripe Test Card",
     accessory: "Stripe test PAN",
     category: "payment",
     countries: "global",
-    generator: generateTestCard,
+    generator: generateStripeTestCard,
+    copyVariants: [{ title: "Copy spaced", transform: formatCardNumber }],
+  },
+  {
+    id: "visa-card",
+    title: "Visa Card",
+    accessory: "Valid Visa test PAN",
+    category: "payment",
+    countries: "global",
+    generator: generateVisaCard,
+    copyVariants: [{ title: "Copy spaced", transform: formatCardNumber }],
+  },
+  {
+    id: "mastercard-card",
+    title: "MasterCard Card",
+    accessory: "Valid Mastercard test PAN",
+    category: "payment",
+    countries: "global",
+    generator: generateMasterCard,
     copyVariants: [{ title: "Copy spaced", transform: formatCardNumber }],
   },
   {
