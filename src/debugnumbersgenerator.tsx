@@ -1,72 +1,108 @@
-import { ActionPanel, Action, Icon, List, getPreferenceValues } from "@raycast/api";
-import { useState } from "react";
-import { generateRandomPESEL, generateRandomNIP, generateRandomREGON, generateRandomSSN, generateRandomPolishIBAN } from "./utils/idGenerators";
+import { Action, ActionPanel, Icon, List, openExtensionPreferences } from "@raycast/api";
+import { useMemo, useState } from "react";
+import { countryOptions } from "./catalog/countries";
+import { categoryOrder, categoryTitles, fieldsForCountry } from "./catalog/fields";
+import { CountryId, FieldCategory, FieldDefinition } from "./catalog/types";
+import { parseTesterEmail } from "./generators/email";
+import { getDefaultCountry, getGeneratorContext } from "./preferences";
 
-interface ExtensionPreferences {
-  mainCountry: string;
-}
-
-const idTypesByCountry: Record<string, Array<{ key: string; title: string; generator: () => string; accessory: string }>> = {
-  poland: [
-    { key: "pesel", title: "PESEL", generator: generateRandomPESEL, accessory: "Numer Identyfikacji Osobistej" },
-    { key: "nip", title: "NIP", generator: generateRandomNIP, accessory: "Numer Identyfikacji Podatkowej" },
-    { key: "regon", title: "REGON", generator: generateRandomREGON, accessory: "Numer w Rejestrze Gospodarki Narodowej" },
-    { key: "iban", title: "IBAN", generator: generateRandomPolishIBAN, accessory: "Numer konta bankowego" },
-  ],
-  usa: [
-    { key: "ssn", title: "SSN", generator: generateRandomSSN, accessory: "Social Security Number" },
-  ],
+const fieldIcons: Record<FieldCategory, Icon> = {
+  tracking: Icon.Link,
+  identity: Icon.AddPerson,
+  contact: Icon.Phone,
+  address: Icon.Pin,
+  company: Icon.Building,
+  payment: Icon.CreditCard,
+  vehicle: Icon.Car,
 };
 
-const countryOptions = [
-  { key: "poland", title: "Poland" },
-  { key: "usa", title: "USA" },
-];
-
 export default function Command() {
-  const preferences = getPreferenceValues<ExtensionPreferences>();
-  const initialCountryFromPreferences = preferences.mainCountry;
+  const [selectedCountry, setSelectedCountry] = useState<CountryId>(getDefaultCountry);
+  const [seed, setSeed] = useState(0);
+  const testerEmailConfigured = Boolean(parseTesterEmail(getGeneratorContext(selectedCountry).testerEmail));
 
-  const [selectedCountry, setSelectedCountry] = useState<string>(
-    countryOptions.find((opt) => opt.key === initialCountryFromPreferences)
-      ? initialCountryFromPreferences
-      : countryOptions[0]?.key || "poland", // Default value in case of an issue
-  );
+  const items = useMemo(() => {
+    const ctx = getGeneratorContext(selectedCountry);
 
-  const idTypes = idTypesByCountry[selectedCountry];
+    return fieldsForCountry(selectedCountry).map((field) => ({
+      field,
+      value: field.generator(ctx),
+    }));
+  }, [selectedCountry, seed]);
+
+  const groupedItems = categoryOrder
+    .map((category) => ({
+      category,
+      items: items.filter(({ field }) => field.category === category),
+    }))
+    .filter((group) => group.items.length > 0);
+
+  function renderActions(field: FieldDefinition, value: string, missingEmail: boolean) {
+    return (
+      <ActionPanel>
+        {missingEmail ? (
+          <Action title="Open Extension Preferences" icon={Icon.Gear} onAction={openExtensionPreferences} />
+        ) : (
+          <>
+            <Action.CopyToClipboard title="Copy Value" content={value} />
+            <Action.Paste title="Paste Value" content={value} />
+            {field.copyVariants
+              ?.map((variant) => {
+                const transformed = variant.transform(value);
+                if (!transformed) {
+                  return null;
+                }
+
+                return <Action.CopyToClipboard key={variant.title} title={variant.title} content={transformed} />;
+              })
+              .filter(Boolean)}
+          </>
+        )}
+        <Action
+          title="Regenerate Values"
+          icon={Icon.ArrowClockwise}
+          shortcut={{ modifiers: ["cmd"], key: "r" }}
+          onAction={() => setSeed((current) => current + 1)}
+        />
+        <Action title="Open Extension Preferences" icon={Icon.Gear} onAction={openExtensionPreferences} />
+      </ActionPanel>
+    );
+  }
 
   return (
     <List
+      searchBarPlaceholder="Search debug fields"
       searchBarAccessory={
-        <List.Dropdown tooltip="Select Country" value={selectedCountry} onChange={setSelectedCountry}>
+        <List.Dropdown
+          tooltip="Select Country"
+          value={selectedCountry}
+          onChange={(value) => setSelectedCountry(value as CountryId)}
+        >
           {countryOptions.map((country) => (
             <List.Dropdown.Item key={country.key} title={country.title} value={country.key} />
           ))}
         </List.Dropdown>
       }
     >
-      {idTypes && idTypes.length > 0 ? ( // Sprawdzenie czy idTypes istnieje i nie jest pusty
-        idTypes.map((id) => {
-          const generated = id.generator();
-          return (
-            <List.Item
-              key={id.key}
-              icon={Icon.AddPerson}
-              title={id.title}
-              subtitle={generated}
-              accessories={[{ icon: Icon.Clipboard, text: id.accessory }]}
-              actions={
-                <ActionPanel>
-                  <Action.CopyToClipboard title="Copy ID" content={generated} />
-                  <Action.Paste title="Paste ID" content={generated} />
-                </ActionPanel>
-              }
-            />
-          );
-        })
-      ) : (
-        <List.EmptyView title="No ID types for selected country" description="Please select a valid country." />
-      )}
+      {groupedItems.map((group) => (
+        <List.Section key={group.category} title={categoryTitles[group.category]}>
+          {group.items.map(({ field, value }) => {
+            const isEmail = field.id === "debug-email";
+            const missingEmail = isEmail && !testerEmailConfigured;
+
+            return (
+              <List.Item
+                key={field.id}
+                icon={isEmail ? Icon.Envelope : fieldIcons[field.category]}
+                title={field.title}
+                subtitle={missingEmail ? "Set tester email in preferences" : value}
+                accessories={[{ icon: Icon.Clipboard, text: field.accessory }]}
+                actions={renderActions(field, value, missingEmail)}
+              />
+            );
+          })}
+        </List.Section>
+      ))}
     </List>
   );
 }

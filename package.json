@@ -2,8 +2,8 @@
   "$schema": "https://www.raycast.com/schemas/extension.json",
   "name": "debug-ID-generator",
   "title": "Debug ID Generator",
-  "description": "Debug ID Generator is a versatile tool designed to streamline the debugging process by generating unique identification numbers compliant with Polish legal standards. This ensures that even the most securely protected forms pass verification. Ideal for developers working with applications, forms, and requests, this tool simplifies tracking and testing by providing easily distinguishable IDs. Enhance your development workflow with seamless integration and efficient ID generation.",
-  "icon": "extension-icon.png",
+  "description": "Generate unique, validation-friendly test data for forms and tracking QA: national IDs, phones, IBANs, and plus-addressed debug emails.",
+  "icon": "duck1.png",
   "author": "sierakk",
   "categories": [
     "Developer Tools"
@@ -13,8 +13,14 @@
     {
       "name": "debugnumbersgenerator",
       "title": "Debug ID Generator",
-      "description": "Debug ID Generator is a versatile tool designed to streamline the debugging process by generating unique identification numbers compliant with Polish legal standards. This ensures that even the most securely protected forms pass verification. Ideal for developers working with applications, forms, and requests, this tool simplifies tracking and testing by providing easily distinguishable IDs. Enhance your development workflow with seamless integration and efficient ID generation.",
+      "description": "Browse and copy generated test IDs, phones, and debug emails for the selected country.",
       "mode": "view"
+    },
+    {
+      "name": "paste-debug-email",
+      "title": "Paste Debug Email",
+      "description": "Paste a unique plus-addressed email based on your configured tester email into the focused field.",
+      "mode": "no-view"
     }
   ],
   "preferences": [
@@ -24,7 +30,7 @@
       "required": true,
       "title": "Choose your main country",
       "description": "Your country will be displayed first after opening",
-      "placeholder": "Poland \uD83C\uDDF5\uD83C\uDDF1",
+      "placeholder": "Poland 🇵🇱",
       "data": [
         {
           "value": "poland",
@@ -35,9 +41,57 @@
           "title": "USA"
         }
       ]
+    },
+    {
+      "name": "testerEmail",
+      "type": "textfield",
+      "required": true,
+      "title": "Your email",
+      "description": "Base inbox used for plus-addressed debug emails, e.g. you@gmail.com",
+      "placeholder": "you@gmail.com"
+    },
+    {
+      "name": "emailPrefix",
+      "type": "textfield",
+      "required": false,
+      "title": "Email debug prefix",
+      "description": "Optional campaign/debug prefix added before the random tag, e.g. gtm or qa",
+      "placeholder": "qa"
+    },
+    {
+      "name": "emailTagMode",
+      "type": "dropdown",
+      "required": false,
+      "title": "Email tag mode",
+      "description": "How the unique plus-tag is generated",
+      "default": "random",
+      "data": [
+        {
+          "value": "random",
+          "title": "Random string"
+        },
+        {
+          "value": "timestamp",
+          "title": "Timestamp"
+        },
+        {
+          "value": "country-random",
+          "title": "Country + random"
+        }
+      ]
+    },
+    {
+      "name": "emailTagLength",
+      "type": "textfield",
+      "required": false,
+      "title": "Email tag length",
+      "description": "Length of the random part of the plus-tag (4-12). Ignored in timestamp mode.",
+      "default": "6",
+      "placeholder": "6"
     }
   ],
   "dependencies": {
+    "@faker-js/faker": "^9.8.0",
     "@raycast/api": "^1.98.5",
     "@raycast/utils": "^1.17.0"
   },
@@ -54,7 +108,7 @@
     "dev": "ray develop",
     "fix-lint": "ray lint --fix",
     "lint": "ray lint",
-    "prepublishOnly": "echo \"\\n\\nIt seems like you are trying to publish the Raycast extension to npm.\\n\\nIf you did intend to publish it to npm, remove the \\`prepublishOnly\\` script and rerun \\`npm publish\\` again.\\nIf you wanted to publish it to the Raycast Store instead, use \\`npm run publish\\` instead.\\n\\n\" && exit 1",
+    "prepublishOnly": "echo \"\\n\\nIt seems like you are trying to publish the Raycast extension to npm.\\n\\nIf you did intend to publish it to npm, remove the `prepublishOnly` script and rerun `npm publish` again.\\nIf you wanted to publish it to the Raycast Store instead, use `npm run publish` instead.\\n\\n\" && exit 1",
     "publish": "npx @raycast/api@latest publish"
   }
 }
