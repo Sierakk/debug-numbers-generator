@@ -64,7 +64,9 @@ export default function Command() {
           shortcut={{ modifiers: ["cmd"], key: "r" }}
           onAction={() => setSeed((current) => current + 1)}
         />
-        <Action title="Open Extension Preferences" icon={Icon.Gear} onAction={openExtensionPreferences} />
+        {!missingEmail && (
+          <Action title="Open Extension Preferences" icon={Icon.Gear} onAction={openExtensionPreferences} />
+        )}
       </ActionPanel>
     );
   }
